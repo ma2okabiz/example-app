@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Tweet;
+use Carbon\Carbon;
+use App\Models\Image;
+use App\Modules\ImageUpload\ImageManagerInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+class TweetService
+{
+    public function getTweets()
+    {
+        return Tweet::orderBy('created_at','DESC')->get();
+    }
+
+    // 自分のTWEETかどうかチェックするメソッド
+    public function checkOwnTweet(int $userId, int $tweetId):bool
+    {
+        $tweet = Tweet::where('id',$tweetId)->first();
+        if( !$tweet ){
+            return false;
+        }
+
+        return $tweet->user_id === $userId;
+    }
+    public function deleteTweet(int $tweetId)
+    {
+        DB::transaction(function () use ($tweetId) {
+            $tweet = Tweet::where('id', $tweetId)->firstOrFail();
+            $tweet->images()->each(function ($image) use ($tweet){
+                $this->imageManager->delete($image->name);
+                $tweet->images()->detach($image->id);
+                $image->delete();
+            });
+            $tweet->delete();
+        });
+    }
+}
