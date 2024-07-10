@@ -5,7 +5,7 @@
 <meta name="viewport"
         content="width=device-width,user-scalable=no,initial-scale=1.0,maxium-scale=1.0,minium-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>つぶやきアプリ</title>
+<title>つぶやきアプリケーション</title>
 </head>
 <body>
 <h1>つぶやきアプリ</h1>
